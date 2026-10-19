@@ -2,43 +2,59 @@
 (function () {
   "use strict";
 
+  var BAR_ID = "saheem-moving-bar";
+  var STYLE_ID = "saheem-moving-bar-style";
+
   function createBar() {
-    if (!document.body ||
-        document.getElementById("saheem-moving-bar")) return;
+    if (!document.body) return;
+
+    if (document.getElementById(BAR_ID)) return;
 
     var bar = document.createElement("div");
-    bar.id = "saheem-moving-bar";
-
-    bar.style.cssText =
-      "width:100%;overflow:hidden;box-sizing:border-box;" +
-      "background:#533c29;color:#F5EBE1;padding:10px 0;" +
-      "direction:rtl;position:relative;z-index:9999;";
+    bar.id = BAR_ID;
+    bar.setAttribute("dir", "rtl");
 
     var track = document.createElement("div");
-    track.style.cssText =
-      "display:flex;width:max-content;" +
-      "animation:saheemMove 14s linear infinite;";
+    track.className = "saheem-moving-track";
 
-    for (var i = 0; i < 2; i++) {
-      var message = document.createElement("span");
-      message.textContent =
-        "الشحن مجاني للطلبات بقيمة 300 ريال فأكثر　　✦　　";
-      message.style.cssText =
-        "display:block;white-space:nowrap;padding-left:20px;" +
-        "font-size:15px;font-weight:600;";
+    var text = "✦ الشحن مجاني للطلبات بقيمة 300 ريال فأكثر ✦";
 
-      track.appendChild(message);
+    for (var i = 0; i < 4; i++) {
+      var item = document.createElement("span");
+      item.textContent = text;
+      track.appendChild(item);
     }
 
     bar.appendChild(track);
 
-    if (!document.getElementById("saheem-moving-style")) {
+    if (!document.getElementById(STYLE_ID)) {
       var style = document.createElement("style");
-      style.id = "saheem-moving-style";
+      style.id = STYLE_ID;
       style.textContent =
-        "@keyframes saheemMove {" +
-        "from { transform: translateX(0); }" +
-        "to { transform: translateX(50%); }" +
+        "#" + BAR_ID + "{" +
+          "display:block;width:100%;overflow:hidden;" +
+          "box-sizing:border-box;background:#533c29;" +
+          "color:#F5EBE1;padding:11px 0;" +
+          "direction:rtl;position:relative;z-index:9999;" +
+        "}" +
+        "#" + BAR_ID + " .saheem-moving-track{" +
+          "display:flex;width:max-content;" +
+          "animation:saheemMoving 18s linear infinite;" +
+          "will-change:transform;" +
+        "}" +
+        "#" + BAR_ID + " span{" +
+          "display:block;white-space:nowrap;" +
+          "padding-left:35px;font-size:15px;" +
+          "font-weight:600;line-height:1.5;" +
+        "}" +
+        "@keyframes saheemMoving{" +
+          "from{transform:translateX(0)}" +
+          "to{transform:translateX(50%)}" +
+        "}" +
+        "@media(prefers-reduced-motion:reduce){" +
+          "#" + BAR_ID + " .saheem-moving-track{" +
+            "animation-duration:40s;" +
+          "}" +
         "}";
 
       document.head.appendChild(style);
