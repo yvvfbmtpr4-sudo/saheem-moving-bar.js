@@ -1,71 +1,75 @@
 
 (function () {
-  "use strict";
+  if (document.getElementById("saheem-shipping-marquee")) return;
 
-  var BAR_ID = "saheem-moving-bar";
-  var STYLE_ID = "saheem-moving-bar-style";
-
-  function createBar() {
-    if (!document.body) return;
-
-    if (document.getElementById(BAR_ID)) return;
+  function addShippingBar() {
+    if (!document.body || document.getElementById("saheem-shipping-marquee")) return;
 
     var bar = document.createElement("div");
-    bar.id = BAR_ID;
-    bar.setAttribute("dir", "rtl");
+    bar.id = "saheem-shipping-marquee";
+    bar.innerHTML =
+      '<div class="saheem-marquee-track">' +
+      '<span>الشحن مجاني للطلبات بقيمة 300 ريال فأكثر</span>' +
+      '<span>الشحن مجاني للطلبات بقيمة 300 ريال فأكثر</span>' +
+      '<span>الشحن مجاني للطلبات بقيمة 300 ريال فأكثر</span>' +
+      '</div>';
 
-    var track = document.createElement("div");
-    track.className = "saheem-moving-track";
+    var css = document.createElement("style");
+    css.id = "saheem-shipping-marquee-style";
+    css.textContent = `
+      #saheem-shipping-marquee {
+        width: 100%;
+        overflow: hidden;
+        background: #533c29;
+        color: #F5EBE1;
+        padding: 10px 0;
+        direction: ltr;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1000;
+      }
+      #saheem-shipping-marquee .saheem-marquee-track {
+        display: flex;
+        width: max-content;
+        animation: saheem-marquee-scroll 24s linear infinite;
+      }
+      #saheem-shipping-marquee span {
+        flex: 0 0 auto;
+        padding: 0 30px;
+        white-space: nowrap;
+        direction: rtl;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      @keyframes saheem-marquee-scroll {
+        from { transform: translateX(-33.333%); }
+        to { transform: translateX(0); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #saheem-shipping-marquee .saheem-marquee-track {
+          animation: none;
+          width: 100%;
+          justify-content: center;
+        }
+        #saheem-shipping-marquee span:not(:first-child) {
+          display: none;
+        }
+      }
+    `;
 
-    var text = "✦ الشحن مجاني للطلبات بقيمة 300 ريال فأكثر ✦";
+    document.head.appendChild(css);
 
-    for (var i = 0; i < 4; i++) {
-      var item = document.createElement("span");
-      item.textContent = text;
-      track.appendChild(item);
+    var header = document.querySelector("header");
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(bar, header);
+    } else {
+      document.body.insertBefore(bar, document.body.firstChild);
     }
-
-    bar.appendChild(track);
-
-    if (!document.getElementById(STYLE_ID)) {
-      var style = document.createElement("style");
-      style.id = STYLE_ID;
-      style.textContent =
-        "#" + BAR_ID + "{" +
-          "display:block;width:100%;overflow:hidden;" +
-          "box-sizing:border-box;background:#533c29;" +
-          "color:#F5EBE1;padding:11px 0;" +
-          "direction:rtl;position:relative;z-index:9999;" +
-        "}" +
-        "#" + BAR_ID + " .saheem-moving-track{" +
-          "display:flex;width:max-content;" +
-          "animation:saheemMoving 18s linear infinite;" +
-          "will-change:transform;" +
-        "}" +
-        "#" + BAR_ID + " span{" +
-          "display:block;white-space:nowrap;" +
-          "padding-left:35px;font-size:15px;" +
-          "font-weight:600;line-height:1.5;" +
-        "}" +
-        "@keyframes saheemMoving{" +
-          "from{transform:translateX(0)}" +
-          "to{transform:translateX(50%)}" +
-        "}" +
-        "@media(prefers-reduced-motion:reduce){" +
-          "#" + BAR_ID + " .saheem-moving-track{" +
-            "animation-duration:40s;" +
-          "}" +
-        "}";
-
-      document.head.appendChild(style);
-    }
-
-    document.body.insertBefore(bar, document.body.firstChild);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", createBar);
+    document.addEventListener("DOMContentLoaded", addShippingBar, { once: true });
   } else {
-    createBar();
+    addShippingBar();
   }
 })();
